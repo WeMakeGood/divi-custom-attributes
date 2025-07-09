@@ -58,8 +58,8 @@ class Divi_Custom_Attributes {
     }
     
     public function enqueue_admin_scripts($hook) {
-        // Only enqueue on Divi Builder pages
-        if (et_core_is_fb_enabled() || (isset($_GET['et_fb']) && $_GET['et_fb'] === '1')) {
+        // Enqueue on all admin pages where Divi Builder might be active
+        if (is_admin() || et_core_is_fb_enabled() || (isset($_GET['et_fb']) && $_GET['et_fb'] === '1')) {
             wp_enqueue_script(
                 'divi-custom-attributes-admin',
                 DIVI_CUSTOM_ATTRIBUTES_PLUGIN_URL . 'assets/js/admin-interface.js',

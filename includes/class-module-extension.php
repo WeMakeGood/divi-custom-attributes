@@ -28,6 +28,7 @@ class Divi_Custom_Attributes_Module_Extension {
     private function init_hooks() {
         add_action('et_builder_ready', array($this, 'add_custom_fields'));
         add_filter('et_pb_module_shortcode_attributes', array($this, 'add_attributes_to_shortcode'), 10, 5);
+        add_action('et_builder_ready', array($this, 'add_custom_toggles'));
     }
     
     public function add_custom_fields() {
@@ -39,10 +40,38 @@ class Divi_Custom_Attributes_Module_Extension {
         }
     }
     
+    public function add_custom_toggles() {
+        // Add custom toggle to Advanced tab for all modules
+        $modules = ET_Builder_Element::get_modules();
+        
+        foreach ($modules as $module_slug => $module) {
+            add_filter("et_pb_module_advanced_fields_{$module_slug}", array($this, 'add_custom_attributes_toggle'));
+        }
+    }
+    
+    public function add_custom_attributes_toggle($advanced_fields) {
+        $advanced_fields['custom_attributes'] = array(
+            'label' => __('Custom Attributes', 'divi-custom-attributes'),
+            'toggle_slug' => 'custom_attributes',
+            'description' => __('Add custom HTML attributes to this module.', 'divi-custom-attributes'),
+        );
+        
+        return $advanced_fields;
+    }
+
     public function add_custom_attributes_field($fields) {
+        // First add the toggle to the Advanced tab
+        if (!isset($fields['advanced_tab']['toggles']['custom_attributes'])) {
+            $fields['advanced_tab']['toggles']['custom_attributes'] = array(
+                'title' => __('Custom Attributes', 'divi-custom-attributes'),
+                'priority' => 100,
+            );
+        }
+        
+        // Add the actual field using textarea type (which we can customize with JS)
         $fields['custom_attributes'] = array(
             'label' => __('Custom Attributes', 'divi-custom-attributes'),
-            'type' => 'custom_attributes',
+            'type' => 'textarea',
             'option_category' => 'configuration',
             'tab_slug' => 'advanced',
             'toggle_slug' => 'custom_attributes',
