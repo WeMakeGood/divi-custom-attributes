@@ -30,9 +30,19 @@ function divi_custom_attributes_check_divi() {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
     }
     
-    // Check for Divi theme
+    // Check for Divi theme - multiple methods
     $theme = wp_get_theme();
-    $is_divi_theme = ($theme->get('Name') === 'Divi' || $theme->get('Template') === 'Divi');
+    $theme_name = $theme->get('Name');
+    $theme_template = $theme->get('Template');
+    $theme_stylesheet = $theme->get('Stylesheet');
+    
+    $is_divi_theme = (
+        $theme_name === 'Divi' || 
+        $theme_template === 'Divi' || 
+        $theme_stylesheet === 'Divi' ||
+        strpos(strtolower($theme_name), 'divi') !== false ||
+        strpos(strtolower($theme_template), 'divi') !== false
+    );
     
     // Check for Divi Builder plugin
     $is_divi_builder_active = function_exists('is_plugin_active') && is_plugin_active('divi-builder/divi-builder.php');
@@ -42,17 +52,33 @@ function divi_custom_attributes_check_divi() {
                          function_exists('et_core_is_fb_enabled') || 
                          function_exists('et_pb_is_pagebuilder_used') ||
                          defined('ET_BUILDER_VERSION') ||
-                         defined('ET_BUILDER_THEME');
+                         defined('ET_BUILDER_THEME') ||
+                         class_exists('ET_Builder_Element');
     
-    // Check if we're in admin and Divi functions might not be loaded yet
-    if (is_admin() && $is_divi_theme) {
-        return true; // If Divi theme is active, assume it's OK in admin
+    // Check for Divi-specific constants and globals
+    $has_divi_constants = defined('ET_BUILDER_VERSION') || 
+                         defined('ET_BUILDER_THEME') || 
+                         defined('ET_CORE_VERSION');
+    
+    // Debug output for troubleshooting (remove in production)
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log('Divi Detection Debug:');
+        error_log('Theme Name: ' . $theme_name);
+        error_log('Theme Template: ' . $theme_template);
+        error_log('Theme Stylesheet: ' . $theme_stylesheet);
+        error_log('Is Divi Theme: ' . ($is_divi_theme ? 'YES' : 'NO'));
+        error_log('Is Divi Builder Active: ' . ($is_divi_builder_active ? 'YES' : 'NO'));
+        error_log('Has Divi Functions: ' . ($has_divi_functions ? 'YES' : 'NO'));
+        error_log('Has Divi Constants: ' . ($has_divi_constants ? 'YES' : 'NO'));
     }
     
-    if (!$is_divi_theme && !$is_divi_builder_active && !$has_divi_functions) {
-        add_action('admin_notices', function() {
+    if (!$is_divi_theme && !$is_divi_builder_active && !$has_divi_functions && !$has_divi_constants) {
+        add_action('admin_notices', function() use ($theme_name, $theme_template) {
             echo '<div class="notice notice-error"><p>';
             echo __('Divi Custom Attributes requires the Divi theme or Divi Builder plugin to be active.', 'divi-custom-attributes');
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                echo '<br><small>Debug: Theme Name: ' . esc_html($theme_name) . ', Template: ' . esc_html($theme_template) . '</small>';
+            }
             echo '</p></div>';
         });
         return false;
@@ -87,11 +113,22 @@ register_activation_hook(__FILE__, function() {
     }
     
     $theme = wp_get_theme();
-    $is_divi_theme = ($theme->get('Name') === 'Divi' || $theme->get('Template') === 'Divi');
+    $theme_name = $theme->get('Name');
+    $theme_template = $theme->get('Template');
+    $theme_stylesheet = $theme->get('Stylesheet');
+    
+    $is_divi_theme = (
+        $theme_name === 'Divi' || 
+        $theme_template === 'Divi' || 
+        $theme_stylesheet === 'Divi' ||
+        strpos(strtolower($theme_name), 'divi') !== false ||
+        strpos(strtolower($theme_template), 'divi') !== false
+    );
+    
     $is_divi_builder_active = function_exists('is_plugin_active') && is_plugin_active('divi-builder/divi-builder.php');
     
     if (!$is_divi_theme && !$is_divi_builder_active) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die(__('Divi Custom Attributes requires the Divi theme or Divi Builder plugin to be active.', 'divi-custom-attributes'));
+        wp_die(__('Divi Custom Attributes requires the Divi theme or Divi Builder plugin to be active. Debug: Theme Name: ' . esc_html($theme_name) . ', Template: ' . esc_html($theme_template) . ', Stylesheet: ' . esc_html($theme_stylesheet), 'divi-custom-attributes'));
     }
 });
