@@ -1,0 +1,156 @@
+/* Divi Custom Attributes Admin Styles */
+
+.divi-custom-attributes-container {
+    margin-top: 10px;
+}
+
+.divi-custom-attributes-help-text {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.divi-custom-attributes-list {
+    margin-bottom: 15px;
+}
+
+.divi-custom-attributes-row {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.divi-custom-attributes-input-group {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.divi-custom-attributes-input-group:last-of-type {
+    margin-right: 15px;
+}
+
+.divi-custom-attributes-input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 13px;
+}
+
+.divi-custom-attributes-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 13px;
+    background: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.divi-custom-attributes-input:focus {
+    border-color: #00a0d2;
+    outline: none;
+    box-shadow: 0 0 0 1px #00a0d2;
+}
+
+.divi-custom-attributes-remove-button {
+    background: #dc3232;
+    color: #fff;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+}
+
+.divi-custom-attributes-remove-button:hover {
+    background: #c62d2d;
+}
+
+.divi-custom-attributes-remove-button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.divi-custom-attributes-add-button {
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.divi-custom-attributes-add-button:hover {
+    background: #005a87;
+    color: #fff;
+}
+
+.divi-custom-attributes-add-button .dashicons {
+    margin-right: 5px;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .divi-custom-attributes-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .divi-custom-attributes-input-group {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .divi-custom-attributes-input-group:last-of-type {
+        margin-right: 0;
+    }
+    
+    .divi-custom-attributes-remove-button {
+        align-self: flex-end;
+        margin-top: 10px;
+    }
+}
+
+/* Integration with Divi Builder */
+.et_pb_option_custom_attributes {
+    position: relative;
+}
+
+.et_pb_option_custom_attributes .et-pb-option-description {
+    display: none;
+}
+
+/* Visual consistency with Divi's styling */
+.divi-custom-attributes-container .et_pb_button {
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+/* Empty state styling */
+.divi-custom-attributes-list:empty + .divi-custom-attributes-add-button {
+    margin-top: 5px;
+}
